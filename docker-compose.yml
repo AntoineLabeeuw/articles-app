@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+    articles-bdd:
+        build: ./articles-db
+        image: articles-db
+        container_name: articles-db
+        volumes:
+            - articles-db-data:/var/lib/mysql
+        networks: 
+            - articles-network
+
+    articles-back:
+        build: ./articles-back
+        image: articles-back
+        container_name: articles-back
+        depends_on: 
+            - articles-bdd
+        ports:
+            - "9000:8080"
+        networks:
+            - articles-network
+    
+    articles-front:
+        build: ./articles-front
+        image: articles-front
+        container_name: articles-front
+        depends_on: 
+            - articles-back
+        ports: 
+            - "9001:80"
+        networks:
+            - articles-network 
+
+
+networks: 
+    articles-network:
+volumes:
+    articles-db-data:
